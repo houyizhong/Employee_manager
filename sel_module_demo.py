@@ -12,14 +12,17 @@ def select_func(sql):
 	if len(sql) == 8:
 		demo_list=from_table(sql)
 		if demo_list:
+			print('HIT1')
 			demo_list=where(sql,demo_list)
 			if demo_list:
+				print('HIT2')
 				result=sel_inner_func(sql,demo_list)
 			else:
-				result='ERROR'
+				result='Sorry,do not find!'
 		else:
 			result='ERROR'
 	else:
+		print('Sorry,you enter lenght is not correct!')
 		result='ERROR'
 
 	return result
@@ -60,12 +63,39 @@ def where(right_sql,demo_list):
 	judge=right_sql[6]
 	values=right_sql[7]
 
+	def select_after_where_func():
+		candidate_list=[]
+		filter_list=[]
+		for list in demo_list:
+			candidate_list.append(list[key_index])
+			if judge == '=':
+				if values == candidate_list[-1]:
+					filter_list.append(list)
+			elif judge == '>':
+				if values.isdigit():
+					int_values=int(values)
+					determine_values=int(candidate_list[-1])
+					if determine_values > int_values:
+						filter_list.append(list)
+				else:
+					print('Your enter {} is not a digit!'.format())
+			elif judge == '<':
+				if values.isdigit():
+					int_values=int(values)
+					determine_values=int(candidate_list[-1])
+					if determine_values < int_values:
+						filter_list.append(list)
+				else:
+					print('Your enter {} is not a digit!'.format(values))
+			else:
+				print('select after where function is worry!')
+				return False
+		return filter_list
+
 	if args in key_list:
 		if judge in judge_list:
 			key_index=key_list.index(args)+1
-			
-			if judge == '=':
-				
+			demo_list=select_after_where_func()
 			return demo_list
 		else:
 			print('Sorry,"{}" is not a legal args'.format(judge))
