@@ -4,7 +4,6 @@ import pickle,os
 
 key_list=['name','age','phone','dept','enroll_date']
 judge_list=['>','<','=','like']
-demo_dict={}
 
 def select_func(sql):
 	'''judge sql is correct length'''
@@ -29,10 +28,13 @@ def select_func(sql):
 
 def sel_inner_func(right_sql,demo_list):
 	'''if sql is 8 characters length and return demo_list or part of demo_list'''
+	demo_dict={}
+	len_list=0
 	args=right_sql[1]
 	args_list=args.split(',')
 	if args == '*':
-		return demo_list[:]
+		len_list=len(demo_list)
+		return demo_list[:],len_list
 	else:
 		for i in args_list:
 			raw_sel_list=[]
@@ -41,9 +43,11 @@ def sel_inner_func(right_sql,demo_list):
 				key_index=key_list.index(i)+1
 				for list in demo_list:
 					raw_sel_list.append(list[key_index])
+				len_list=len_list+len(raw_sel_list)
 			else:
 				print('Sorry,your enter is invaild!')
-		return demo_dict
+				break
+		return demo_dict,len_list
 
 def from_table(right_sql):
 	'''read table'''
@@ -105,5 +109,11 @@ def where(right_sql,demo_list):
 		return False
 
 enter=input('>>>')
-sel_result=select_func(enter)
-print(sel_result)
+raw_sel_result=select_func(enter)
+if len(raw_sel_result) != 2:
+	print('Error!Something worry...')
+else:
+	sel_result=raw_sel_result[0]
+	sel_len=raw_sel_result[1]
+	print(sel_result)
+	print('Find {} items'.format(sel_len))
