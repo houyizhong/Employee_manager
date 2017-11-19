@@ -11,11 +11,16 @@ def select_func(sql):
 	if len(sql) == 8:
 		demo_list=from_table(sql)
 		if demo_list:
-			print('HIT1')
 			demo_list=where(sql,demo_list)
 			if demo_list:
-				print('HIT2')
 				result=sel_inner_func(sql,demo_list)
+				if len(result) != 2:
+					print('Error!Something worry...')
+				else:
+					sel_result=result[0]
+					sel_len=result[1]
+					print(sel_result)
+					print('Find {} items'.format(sel_len))
 			else:
 				result='Sorry,do not find!'
 		else:
@@ -110,10 +115,3 @@ def where(right_sql,demo_list):
 
 enter=input('>>>')
 raw_sel_result=select_func(enter)
-if len(raw_sel_result) != 2:
-	print('Error!Something worry...')
-else:
-	sel_result=raw_sel_result[0]
-	sel_len=raw_sel_result[1]
-	print(sel_result)
-	print('Find {} items'.format(sel_len))

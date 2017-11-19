@@ -13,7 +13,12 @@ def main_func(sql):
 		if demo_list:
 			demo_dict=insert_func(sql,demo_list)
 			if demo_dict:
-				result=insert_table_func(demo_dict)
+				result=insert_table_func(demo_dict,demo_list)
+				if len(result) == 6:
+					demo_list.append(result)
+					write_to_file(demo_list)
+				print('You insert staff table:\n {}'.format(result))
+					
 			else:
 				result='ERROR'
 		else:
@@ -46,22 +51,26 @@ def insert_func(right_sql,demo_list):
 	def judge_phone():
 		for list in demo_list:
 			if phone in list:
-				pass
+				print(phone)
+				print(list)
+				return False
 			else:
-				return True
+				pass
+		return True
 
 	if len(args_list) == len(values_list):
 		if 'phone' in args_list:
-			phone=args_list.index('phone')
+			phone_index=args_list.index('phone')
+			phone=values_list[phone_index]
 			if judge_phone():
 				for arg in args_list:
 					if arg in key_list:
-						print('HIT arg')
 						value_index=args_list.index(arg)
 						value=values_list[value_index]
 						demo_dict[arg]=value
 					else:
 						print('Sorry,your enter args is invaild!')
+						demo_dict={}
 						break
 			else:
 				print('Sorry,you enter phone is exist!')
@@ -72,22 +81,25 @@ def insert_func(right_sql,demo_list):
 	return demo_dict
 	
 
-def insert_table_func(insert_dict):
+def insert_table_func(insert_dict,demo_list):
 	'''insert null and staff_id'''
 	insert_list=[]
+	number=len(demo_list)+1
+	insert_list.insert(0,number)
 
-	for num in range(6):
-		for i in insert_dict.keys():
-			key_index=key_list.index(i)+1
-			if key_index == num:
-				insert_list.append(i)
-			else:
-				insert_list.append('NULL')
+	for i in key_list:
+		info_values=insert_dict.get(i,'NULL')
+		insert_list.append(info_values)
 	
-	result=insert_list
-	return reslut
+	
+	return insert_list
 
+
+def write_to_file(demo_list):
+	'''write to file'''
+	f=open('staff_table','wb')
+	pickle.dump(demo_list,f)
+	f.close()
 
 enter=input('>>>')
 insert_result=main_func(enter)
-print(insert_result)
