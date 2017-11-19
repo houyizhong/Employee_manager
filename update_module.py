@@ -88,6 +88,11 @@ def where(right_sql,demo_list):
 						filter_list.append(list)
 				else:
 					print('Your enter {} is not a digit!'.format(args))
+			elif judge == 'like':
+				if candidate_list[-1].find(values):
+					filter_list.append(list)
+				else:
+					pass
 			else:
 				print('select after where function is worry!')
 				return False

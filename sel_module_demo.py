@@ -81,7 +81,7 @@ def where(right_sql,demo_list):
 				if values == candidate_list[-1]:
 					filter_list.append(list)
 			elif judge == '>':
-				if values.isdigit():
+				if values.isdigit() and candidate_list[-1]:
 					int_values=int(values)
 					determine_values=int(candidate_list[-1])
 					if determine_values > int_values:
@@ -89,13 +89,18 @@ def where(right_sql,demo_list):
 				else:
 					print('Your enter {} is not a digit!'.format())
 			elif judge == '<':
-				if values.isdigit():
+				if values.isdigit() and candidate_list[-1]:
 					int_values=int(values)
 					determine_values=int(candidate_list[-1])
 					if determine_values < int_values:
 						filter_list.append(list)
 				else:
 					print('Your enter {} is not a digit!'.format(values))
+			elif judge == 'like':
+				if candidate_list[-1].find(values) != -1:
+					filter_list.append(list)
+				else:
+					pass
 			else:
 				print('select after where function is worry!')
 				return False
