@@ -58,5 +58,5 @@ def delete_func(right_sql,demo_list):
 			print('Sorry,you enter id invaild')
 
 
-enter=input('>>>')
-delete_result=main_func(enter)
+#enter=input('>>>')
+#delete_result=main_func(enter)
