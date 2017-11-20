@@ -1,24 +1,30 @@
 #select function module 
 
-import pickle,os
+import pickle,os,file_module
+
+
+dirname=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+database_dir=dirname+os.sep+'database'
 
 key_list=['name','age','phone','dept','enroll_date']
 judge_list=['>','<','=','like']
 
-def main_func(sql):
+def select_func(sql):
 	'''judge sql is correct length'''
 	sql=sql.split(' ')
 	if len(sql) == 8:
 		demo_list=from_table(sql)
 		if demo_list:
-			demo_list2=where(sql,demo_list)
-			if demo_list2:
-				print('Find list:{}\n'.format(demo_list2))
-				result=set_func(sql,demo_list2)
-				if result:
-					print('Update list:{}\n'.format(result))
-					write_to_file(demo_list)
-					print('Update done!')
+			demo_list=where(sql,demo_list)
+			if demo_list:
+				result=sel_inner_func(sql,demo_list)
+				if len(result) != 2:
+					print('Error!Something worry...')
+				else:
+					sel_result=result[0]
+					sel_len=result[1]
+					print(sel_result)
+					print('Find {} items'.format(sel_len))
 			else:
 				result='Sorry,do not find!'
 		else:
@@ -29,28 +35,35 @@ def main_func(sql):
 
 	return result
 
-def set_func(right_sql,demo_list):
+def sel_inner_func(right_sql,demo_list):
 	'''if sql is 8 characters length and return demo_list or part of demo_list'''
-	
-	args=right_sql[3]
-	args_list=args.split('=')
-	key_args=args_list[0]
-	values_args=args_list[1]
-
-	if key_args in key_list:
-		key_index=key_list.index(key_args)+1
-		for list in demo_list:
-			list.pop(key_index)
-			list.insert(key_index,values_args)
-		return demo_list
+	demo_dict={}
+	len_list=0
+	args=right_sql[1]
+	args_list=args.split(',')
+	if args == '*':
+		len_list=len(demo_list)
+		return demo_list[:],len_list
 	else:
-		print('Sorry,your enter key invaild.')
+		for i in args_list:
+			raw_sel_list=[]
+			if i in key_list:
+				demo_dict[i]=raw_sel_list
+				key_index=key_list.index(i)+1
+				for list in demo_list:
+					raw_sel_list.append(list[key_index])
+				len_list=len_list+len(raw_sel_list)
+			else:
+				print('Sorry,your enter is invaild!')
+				break
+		return demo_dict,len_list
 
 def from_table(right_sql):
 	'''read table'''
-	table_name=right_sql[1]
-	if os.path.exists(table_name):
-		f=open(table_name,'rb')
+	table_name=right_sql[3]
+	table_file=database_dir+os.sep+table_name
+	if os.path.exists(table_file):
+		f=open(table_file,'rb')
 		demo_list=pickle.load(f)
 		f.close()
 		return demo_list
@@ -64,7 +77,7 @@ def where(right_sql,demo_list):
 	judge=right_sql[6]
 	values=right_sql[7]
 
-	def update_after_where_func():
+	def select_after_where_func():
 		candidate_list=[]
 		filter_list=[]
 		for list in demo_list:
@@ -73,23 +86,23 @@ def where(right_sql,demo_list):
 				if values == candidate_list[-1]:
 					filter_list.append(list)
 			elif judge == '>':
-				if values.isdigit() and candidate_list[-1].isdigit():
+				if values.isdigit() and candidate_list[-1]:
 					int_values=int(values)
 					determine_values=int(candidate_list[-1])
 					if determine_values > int_values:
 						filter_list.append(list)
 				else:
-					print('Your enter {} is not a digit!'.format(args))
+					print('Your enter {} is not a digit!'.format())
 			elif judge == '<':
-				if values.isdigit() and candidate_list[-1].isdigit():
+				if values.isdigit() and candidate_list[-1]:
 					int_values=int(values)
 					determine_values=int(candidate_list[-1])
 					if determine_values < int_values:
 						filter_list.append(list)
 				else:
-					print('Your enter {} is not a digit!'.format(args))
+					print('Your enter {} is not a digit!'.format(values))
 			elif judge == 'like':
-				if candidate_list[-1].find(values):
+				if candidate_list[-1].find(values) != -1:
 					filter_list.append(list)
 				else:
 					pass
@@ -101,7 +114,7 @@ def where(right_sql,demo_list):
 	if args in key_list:
 		if judge in judge_list:
 			key_index=key_list.index(args)+1
-			demo_list=update_after_where_func()
+			demo_list=select_after_where_func()
 			return demo_list
 		else:
 			print('Sorry,"{}" is not a legal args'.format(judge))
@@ -110,11 +123,5 @@ def where(right_sql,demo_list):
 		print('Sorry,"{}" is not a legal args'.format(args))
 		return False
 
-def write_to_file(demo_list):
-        '''write to file'''
-        f=open('staff_table','wb')
-        pickle.dump(demo_list,f)
-        f.close()
-
 #enter=input('>>>')
-#update_result=main_func(enter)
+#raw_sel_result=select_func(enter)

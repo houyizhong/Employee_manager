@@ -1,7 +1,10 @@
 #delete employee fucntion
 #version:demo
 
-import os,pickle
+import os,pickle,file_module
+
+dirname=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+database_dir=dirname+os.sep+'database'
 
 def main_func(sql):
 	'''judge sql is correct length'''
@@ -11,7 +14,7 @@ def main_func(sql):
 		if demo_list:
 			result=delete_func(sql,demo_list)
 			if result:
-				write_to_file(result)
+				file_module.write_to_file(result)
 				print('Delete done!')
 			else:
 				result='ERROR'
@@ -22,24 +25,20 @@ def main_func(sql):
 		result='ERROR'
 	return result
 
+
 def from_table(right_sql):
-	'''read table'''
-	table_name=right_sql[2]
-	if os.path.exists(table_name):
-		f=open(table_name,'rb')
-		demo_list=pickle.load(f)
-		f.close()
-		return demo_list
-	else:
-		print('Sorry,your enter table is not exist!')
-		return False
+         '''read table'''
+         table_name=right_sql[2]
+         table_file=database_dir+os.sep+table_name
+         if os.path.exists(table_file):
+                 f=open(table_file,'rb')
+                 demo_list=pickle.load(f)
+                 f.close()
+                 return demo_list
+         else:
+                 print('Sorry,your enter table is not exist!')
+                 return False
 
-
-def write_to_file(demo_list):
-	'''write to file'''
-	f=open('staff_table','wb')
-	pickle.dump(demo_list,f)
-	f.close()
 
 def delete_func(right_sql,demo_list):
 	delete_id=right_sql[-1]

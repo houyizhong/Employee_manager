@@ -1,5 +1,10 @@
 #staff table io
 #version:demo
+import os,sys
+
+dirname=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+core_dir=dirname+os.sep+'core'
+sys.path.append(core_dir)
 
 import insert_module,update_module,delete_module,sel_module,chushihua
 

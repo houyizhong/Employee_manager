@@ -1,7 +1,10 @@
 #insert employee information
 #version:demo
 
-import os,pickle
+import os,pickle,file_module
+
+dirname=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+database_dir=dirname+os.sep+'database'
 
 key_list=['name','age','phone','dept','enroll_date']
 
@@ -16,7 +19,7 @@ def main_func(sql):
 				result=insert_table_func(demo_dict,demo_list)
 				if len(result) == 6:
 					demo_list.append(result)
-					write_to_file(demo_list)
+					file_module.write_to_file(demo_list)
 				print('You insert staff table:\n {}'.format(result))
 					
 			else:
@@ -28,17 +31,20 @@ def main_func(sql):
 		result='ERROR'
 	return result
 
+
 def from_table(right_sql):
-	'''read table'''
-	table_name=right_sql[2]
-	if os.path.exists(table_name):
-		f=open(table_name,'rb')
-		demo_list=pickle.load(f)
-		f.close()
-		return demo_list
-	else:
-		print('Sorry,your enter table is not exist!')
-		return False
+         '''read table'''
+         table_name=right_sql[2]
+         table_file=database_dir+os.sep+table_name
+         if os.path.exists(table_file):
+                 f=open(table_file,'rb')
+                 demo_list=pickle.load(f)
+                 f.close()
+                 return demo_list
+         else:
+                 print('Sorry,your enter table is not exist!')
+                 return False
+
 
 def insert_func(right_sql,demo_list):
 	'''insert employee info into table'''
@@ -95,11 +101,6 @@ def insert_table_func(insert_dict,demo_list):
 	return insert_list
 
 
-def write_to_file(demo_list):
-	'''write to file'''
-	f=open('staff_table','wb')
-	pickle.dump(demo_list,f)
-	f.close()
 
 #enter=input('>>>')
 #insert_result=main_func(enter)
