@@ -13,10 +13,10 @@ def main_func(sql):
 		if demo_list:
 			demo_list2=where(sql,demo_list)
 			if demo_list2:
-				print(demo_list2)
+				print('Find list:{}\n'.format(demo_list2))
 				result=set_func(sql,demo_list2)
 				if result:
-					print(demo_list)
+					print('Update list:{}\n'.format(result))
 					write_to_file(demo_list)
 					print('Update done!')
 			else:
