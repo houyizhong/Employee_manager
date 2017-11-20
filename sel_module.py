@@ -113,5 +113,5 @@ def where(right_sql,demo_list):
 		print('Sorry,"{}" is not a legal args'.format(args))
 		return False
 
-enter=input('>>>')
-raw_sel_result=select_func(enter)
+#enter=input('>>>')
+#raw_sel_result=select_func(enter)

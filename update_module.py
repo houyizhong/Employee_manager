@@ -111,5 +111,5 @@ def write_to_file(demo_list):
         pickle.dump(demo_list,f)
         f.close()
 
-enter=input('>>>')
-update_result=main_func(enter)
+#enter=input('>>>')
+#update_result=main_func(enter)
